@@ -11,3 +11,13 @@
 #define TFT_DC_PIN 13
 
 #endif // CONTROLLER_PINOUT_H
+
+// #ifndef GRIPPER_PINOUT_H
+// #define GRIPPER_PINOUT_H
+
+// #define LEFT_SERVO_PIN 13
+// #define RIGHT_SERVO_PIN 12
+// #define SERVO_ANGLE_CONVERSION 5/3
+
+
+// #endif // GRIPPER_PINOUT_H

@@ -5,9 +5,9 @@
 #include "wireless.h"
 #include "robot_motion_control.h"
 
-#define UTURN
+// #define UTURN
 // #define CIRCLE
-// #define JOYSTICK
+#define JOYSTICK
 // #define YOUR_TRAJECTORY
 
 extern RobotMessage robotMessage;
