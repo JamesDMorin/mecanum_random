@@ -1,4 +1,4 @@
-# Team 1: Mobile Robot Code
+# Team 1: Mobile Robot (and gripper) Code
 
 2.12/2.120 Intro to Robotics  
 Spring 2024[^1]
@@ -21,6 +21,7 @@ Open `robot_motion_control.cpp` and read through `updateOdometry()`. Make sure t
 <img src="./.images/odom.png" alt="drawing" width="1000"/>
 </p>
 
+We will want to do an odometry that depends on IMU, not encoder values. Task for Yuan?
 
 ## 2 Joystick Control
 
@@ -35,9 +36,13 @@ In `robot_motion_control.cpp`, comment out `#define CIRCLE` and uncomment `#defi
 
 Set your PlatformIO environment back to `env:robot`. Upload `robot_main.cpp`, `robot_drive.cpp`, `robot_motion_control.cpp`, and `robot_wireless.cpp` to the microcontroller on your mobile robot. At this point, you should be able to drive your mobile robot around with your joystick!
 
+We will maybe use a logitech controller, not just joysticks and buttons on a breadboard.
+
 ## 3 Custom Trajectory
 
 In `robot_motion_control.cpp`, comment out `#define JOYSTICK` and uncomment `#define YOUR_TRAJECTORY`. In the `followTrajectory()` function, make your own path using a state machine, taking `UTURN` as inspiration.
+
+We could kinda do a path following from distance data, more to be seen.
 
 ### 5.1 IMU 
 
