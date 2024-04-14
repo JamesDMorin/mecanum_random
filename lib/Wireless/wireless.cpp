@@ -36,6 +36,25 @@ bool RobotMessage::operator==(const RobotMessage& other) {
            theta == other.theta;
 }
 
+void GripperControllerMessage::print() {
+    Serial.print("Gripper Controller Message\n");
+    Serial.printf("millis: %d\n", millis);
+    Serial.printf("command: %d\n", command);
+} 
+
+bool GripperControllerMessage::operator==(const GripperControllerMessage& other) {
+    return command == other.command;
+}
+
+void GripperMessage::print() {
+    Serial.print("Gripper Message\n");
+    Serial.printf("state: %d\n", state);
+} 
+
+bool GripperMessage::operator==(const GripperMessage& other) {
+    return state == other.state;
+}
+
 void setupWireless() {
     // ESP_NOW Setup
     // Set device as a Wi-Fi Station

@@ -37,6 +37,7 @@ struct RobotMessage {
 } ;
 
 struct GripperControllerMessage {
+    unsigned long millis;
     int command;
 
     void print();
@@ -44,6 +45,7 @@ struct GripperControllerMessage {
 } ;
 
 struct GripperMessage {
+    unsigned long millis;
     int state;
 
     void print();
@@ -64,7 +66,7 @@ extern esp_now_peer_info_t peerInfo;
 extern bool freshWirelessData;
 extern ControllerMessage controllerMessage;
 extern RobotMessage robotMessage;
-extern GripperControllerMessage robotMessage;
-extern GripperMessage robotMessage;
+extern GripperControllerMessage gripperControllerMessage;
+extern GripperMessage gripperMessage;
 
 #endif // WIRELESS_H
