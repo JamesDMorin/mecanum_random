@@ -13,6 +13,9 @@ Bounce bounce2 = Bounce(); // INSTANTIATE A Bounce OBJECT
 Bounce bounce3 = Bounce(); // INSTANTIATE A Bounce OBJECT
 Bounce bounce4 = Bounce(); // INSTANTIATE A Bounce OBJECT
 
+int magnet_command = 0;
+int gripper_command = 1;
+
 void setup() {
     Serial.begin(115200);
 
@@ -47,42 +50,43 @@ void loop() {
     if ( bounce0.changed() ) {
         int deboucedInput = bounce0.read();
         if ( deboucedInput == LOW ) {
-            gripperControllerMessage.command = 0;
-            sendControllerData();
+            magnet_command = 1;
         }
     }
     if ( bounce1.changed() ) {
         int deboucedInput = bounce1.read();
         if ( deboucedInput == LOW ) {
-            gripperControllerMessage.command = 1;
-            sendControllerData();
+            magnet_command = 0;
         }
     }
     if ( bounce2.changed() ) {
         int deboucedInput = bounce2.read();
         if ( deboucedInput == LOW ) {
-            gripperControllerMessage.command = 2;
-            sendControllerData();
+            gripper_command = 0;
         }
     }
     if ( bounce3.changed() ) {
         int deboucedInput = bounce3.read();
         if ( deboucedInput == LOW ) {
-            gripperControllerMessage.command = 3;
-            sendControllerData();
+            gripper_command = 1;
         }
     }    if ( bounce4.changed() ) {
         int deboucedInput = bounce4.read();
         if ( deboucedInput == LOW ) {
-            gripperControllerMessage.command = 4;
-            sendControllerData();
+            gripper_command = 2;
         }
     }
     
-
-    // if (!(prevControllerMessage == controllerMessage)) {
-    //     sendControllerData();
-    //     prevControllerMessage = controllerMessage;
-    // }
+    // Read and send controller sensors
+    EVERY_N_MILLIS(50) {
+        gripperControllerMessage.millis = millis();
+        gripperControllerMessage.magnet_command = magnet_command;
+        gripperControllerMessage.gripper_command = gripper_command;
+        
+        if (!(prevGripperControllerMessage == gripperControllerMessage)) {
+            sendControllerData();
+            prevGripperControllerMessage = gripperControllerMessage;
+        }
+    }
 
 }

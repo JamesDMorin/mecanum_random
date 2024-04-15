@@ -38,7 +38,8 @@ struct RobotMessage {
 
 struct GripperControllerMessage {
     unsigned long millis;
-    int command;
+    int magnet_command;
+    int gripper_command;
 
     void print();
     bool operator==(const GripperControllerMessage& other);

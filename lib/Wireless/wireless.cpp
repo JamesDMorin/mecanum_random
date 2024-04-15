@@ -39,11 +39,13 @@ bool RobotMessage::operator==(const RobotMessage& other) {
 void GripperControllerMessage::print() {
     Serial.print("Gripper Controller Message\n");
     Serial.printf("millis: %d\n", millis);
-    Serial.printf("command: %d\n", command);
+    Serial.printf("magnet_command: %d\n", magnet_command);
+    Serial.printf("gripper_command: %d\n", gripper_command);
 } 
 
 bool GripperControllerMessage::operator==(const GripperControllerMessage& other) {
-    return command == other.command;
+    return magnet_command == other.magnet_command &&
+           gripper_command == other.gripper_command;
 }
 
 void GripperMessage::print() {
