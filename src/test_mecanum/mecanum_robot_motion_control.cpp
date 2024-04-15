@@ -34,9 +34,9 @@ void setupIMU() {
 // Sets the desired wheel velocities based on desired robot velocity in m/s
 // and k curvature in 1/m representing 1/(radius of curvature)
 void setWheelVelocities(float robotVelocity, float k){
-    double left = (robotVelocity - k*b*robotVelocity)/r;
-    double right = 2*robotVelocity/r  - left;
-    updateSetpoints(left, right);
+    double left = (robotVelocity - k*WHEEL_B*robotVelocity)/WHEEL_R;
+    double right = 2*robotVelocity/WHEEL_R  - left;
+    updateSetpoints(left, right, 0.0);
 }
 
 // Makes robot follow a trajectory
@@ -44,10 +44,14 @@ void followTrajectory() {
 
     #ifdef JOYSTICK
     if (freshWirelessData) {
-        double forward = abs(controllerMessage.joystick1.y) < 0.1 ? 0 : mapDouble(controllerMessage.joystick1.y, -1, 1, -MAX_FORWARD, MAX_FORWARD);
-        double sideways = abs(controllerMessage.joystick1.x) < 0.1 ? 0 : -mapDouble(controllerMessage.joystick1.x, -1, 1, -MAX_FORWARD, MAX_FORWARD);
-        Serial.printf("x: %.2f, y: %.2f\n", forward, sideways);
-        updateSetpoints(forward, sideways);
+        double forward = abs(controllerMessage.joystick1.y) < 0.1 ? 0 : mapDouble(abs(controllerMessage.joystick1.y), 0.1, 1, 0, MAX_FORWARD);
+        forward = controllerMessage.joystick1.y > 0 ? forward : -forward;
+        double sideways = abs(controllerMessage.joystick1.x) < 0.1 ? 0 : -mapDouble(abs(controllerMessage.joystick1.x), 0.1, 1, 0, MAX_FORWARD);
+        sideways = controllerMessage.joystick1.x > 0 ? sideways : -sideways;
+        double rotation = abs(controllerMessage.joystick2.x) < 0.1 ? 0 : -mapDouble(abs(controllerMessage.joystick2.x), 0.1, 1, 0, MAX_ROTATE);
+        rotation = controllerMessage.joystick2.x > 0 ? rotation : -rotation;
+        Serial.printf("x: %.2f, y: %.2f, theta: %.2f\n", forward, sideways, rotation);
+        updateSetpoints(forward, sideways, rotation);
     }
     #endif 
 

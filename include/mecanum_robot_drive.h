@@ -5,14 +5,16 @@
 
 #define Kp 0.25
 #define Ki 0.01
-#define Kd 0
+#define Kd 0.01
 #define pidTau 0.1
 
-#define MAX_FORWARD 6
-#define MAX_TURN 3
+#define M_ALPHA 0.1
+
+#define MAX_FORWARD 20
+#define MAX_ROTATE 30
 
 void setupDrive();
-void updateSetpoints(double forward, double sideways);
+void updateSetpoints(double forward, double sideways, double rotation);
 void updatePIDs();
 
 #endif // MECANUM_ROBOT_DRIVE_H
