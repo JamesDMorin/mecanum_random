@@ -26,6 +26,7 @@ void loop() {
     EVERY_N_MILLIS(50) {
         controllerMessage.millis = millis();
         controllerMessage.joystick1 = joystick1.read();
+        controllerMessage.joystick2 = joystick2.read();
         
         if (!(prevControllerMessage == controllerMessage)) {
             sendControllerData();
