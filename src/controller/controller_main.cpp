@@ -17,6 +17,9 @@ void setup() {
     setupWireless();
 
     joystick1.setup();
+    joystick2.setup();
+    pinMode(BUTTON_L_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_R_PIN, INPUT_PULLUP);    
 
     Serial.println("Setup complete.");
 }
@@ -27,10 +30,16 @@ void loop() {
         controllerMessage.millis = millis();
         controllerMessage.joystick1 = joystick1.read();
         controllerMessage.joystick2 = joystick2.read();
+        controllerMessage.buttonL = digitalRead(BUTTON_L_PIN) == LOW;
+        controllerMessage.buttonR = digitalRead(BUTTON_R_PIN) == LOW;
         
         if (!(prevControllerMessage == controllerMessage)) {
             sendControllerData();
             prevControllerMessage = controllerMessage;
         }
+        // Serial.printf("Joystick1: %.2f, %.2f, Joystick2: %.2f, %.2f, BL: %u, BR:%u\n",
+        //                 controllerMessage.joystick1.x, controllerMessage.joystick1.y,
+        //                 controllerMessage.joystick2.x, controllerMessage.joystick2.y,
+        //                 controllerMessage.buttonL, controllerMessage.buttonR);
     }
 }

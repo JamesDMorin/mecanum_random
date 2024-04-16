@@ -5,7 +5,7 @@
 #define JOYSTICK1_Y_PIN A1
 #define JOYSTICK2_X_PIN A2
 #define JOYSTICK2_Y_PIN A3
-#define BUTTON_L_PIN 16
+#define BUTTON_L_PIN 38
 #define BUTTON_R_PIN 39
 #define TFT_CS_PIN 12
 #define TFT_DC_PIN 13
