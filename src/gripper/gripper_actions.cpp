@@ -4,6 +4,7 @@
 #include "wireless.h"
 #include "gripper_pinout.h"
 #include "UMS3.h"
+#include "gripper_actions.h"
 
 UMS3 ums3;
 
@@ -32,6 +33,9 @@ void setupGripper(){
     LeftServo.attach(LEFT_SERVO_PIN, MIN_US, MAX_US);
     RightServo.attach(RIGHT_SERVO_PIN, MIN_US, MAX_US);
     pwm.attachPin(14, 10000); //10kHz
+
+    pinMode(RIGHT_MAGNET_PIN, OUTPUT);
+    pinMode(LEFT_MAGNET_PIN, OUTPUT);
 }
 
 void updateCommand(){
@@ -45,30 +49,73 @@ void runGripperActions(){
     if (magnet_state) {
         //turn on magnet
         r = 255;
-
+        MagnetsOn();
     } else {
         //turn off magnet
         r = 0;
-
+        MagnetsOff();
     }
 
     if (gripper_state == 0) {
         // Gripper EM Mode
         b = 255;
         g = 0;
+        MagnetPosition();
 
     } else if (gripper_state == 1) {
         // Gripper Open 
         b = 0;
         g = 255;
+        MagnetsOff();
+        OpenForTim();
         
     } else if (gripper_state == 2) {
         // Gripper Close
         b = 255;
         g = 255;
+        MagnetsOff();
+        ClosedOnTim();
         
     }
 
     ums3.setPixelColor(UMS3::color(r,g,b));
 
+}
+
+void ClosedOnTim() {
+    // MagnetsOff();
+    gripper_state = 2;
+    RightServo.write(0);
+    LeftServo.write(180);
+    Serial.print("Gripper closing onto Tim (2 sec)");
+    delay(1000);
+}
+
+void OpenForTim() {
+    // MagnetsOff();
+    gripper_state = 1;
+    RightServo.write(0 + OPEN_ANGLE);
+    LeftServo.write(180 - OPEN_ANGLE);
+    Serial.print("Gripper Ready to grab Tim (2 sec)");
+    delay(1000);
+}
+
+void MagnetPosition() {
+    gripper_state = 0;
+    RightServo.write(180);
+    LeftServo.write(0);
+    Serial.print("Gripper In Magnet Position (2 sec)");
+    delay(1000);
+}
+
+void MagnetsOn() {
+    magnet_state = 1;
+    digitalWrite(LEFT_MAGNET_PIN, HIGH);
+    digitalWrite(RIGHT_MAGNET_PIN, HIGH);
+}
+
+void MagnetsOff() {
+    magnet_state = 0;
+    digitalWrite(LEFT_MAGNET_PIN, LOW);
+    digitalWrite(RIGHT_MAGNET_PIN, LOW);
 }

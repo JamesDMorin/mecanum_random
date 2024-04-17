@@ -7,5 +7,10 @@
 void setupGripper();
 void updateCommand();
 void runGripperActions();
+void ClosedOnTim();
+void OpenForTim();
+void MagnetPosition();
+void MagnetsOn();
+void MagnetsOff();
 
 #endif

@@ -10,6 +10,9 @@
 #define TFT_CS_PIN 12
 #define TFT_DC_PIN 13
 
+#define RIGHT_MAGNET_PIN 14
+#define LEFT_MAGNET_PIN 15
+
 #endif // CONTROLLER_PINOUT_H
 
 // #ifndef GRIPPER_PINOUT_H

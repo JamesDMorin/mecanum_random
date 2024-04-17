@@ -1,8 +1,11 @@
 #ifndef GRIPPER_PINOUT_H
 #define GRIPPER_PINOUT_H
 
-#define LEFT_SERVO_PIN 13
 #define RIGHT_SERVO_PIN 12
+#define LEFT_SERVO_PIN 13
+
+#define RIGHT_MAGNET_PIN 14
+#define LEFT_MAGNET_PIN 15
 
 #define CLOSED_POS_BUTTON 5
 #define OPEN_POS_BUTTON 4
@@ -14,9 +17,5 @@
 #define MAX_US 2060
 
 #define OPEN_ANGLE 15
-
-void ClosedOnTim();
-void OpenForTim();
-void MagnetPosition();
 
 #endif // GRIPPER_PINOUT_H
