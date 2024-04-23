@@ -20,6 +20,7 @@ void setup() {
     Serial.begin(115200);
 
     setupWireless();
+    thermal_cam_setup();
 
     // BUTTONS SETUP
     bounce0.attach( MAG_ON_PIN ,  INPUT_PULLUP ); // BOUNCE SETUP (USE INTERNAL PULL-UP)
@@ -76,6 +77,8 @@ void loop() {
             gripper_command = 2;
         }
     }
+
+    thermal_cam_read();
     
     // Read and send controller sensors
     EVERY_N_MILLIS(50) {

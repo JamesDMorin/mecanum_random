@@ -5,6 +5,7 @@
 #include "joystick.h"
 #include "dpad.h"
 #include "display.h"
+#include "Adafruit_AMG88xx.h"
 
 const uint8_t gripperAddr[] = {0xF4, 0x12, 0xFA, 0x40, 0x9A, 0x00};
 // const uint8_t gripperAddr[] = {0xEC, 0xDA, 0x3B, 0x41, 0xA2, 0x00}; //address of new test ESP-32
@@ -47,7 +48,9 @@ struct GripperControllerMessage {
 
 struct GripperMessage {
     unsigned long millis;
-    int state;
+    int gripper_state;
+    int magnet_state;
+    short pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
     void print();
     bool operator==(const GripperMessage& other);

@@ -1,5 +1,6 @@
 #include <ESP32Servo.h>
 #include <Arduino.h>
+#include <Adafruit_AMG88xx.h>
 #include "util.h"
 #include "wireless.h"
 #include "gripper_pinout.h"
@@ -7,6 +8,8 @@
 #include "gripper_actions.h"
 
 UMS3 ums3;
+Adafruit_AMG88xx amg;
+float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 
 Servo LeftServo;
 Servo RightServo;
@@ -19,6 +22,8 @@ extern GripperControllerMessage gripperControllerMessage;
 
 int magnet_state = 0;
 int gripper_state = 1;
+int old_magnet_state = 0;
+int old_gripper_state = 1;
 
 // for testing lights
 int r = 0;
@@ -36,6 +41,15 @@ void setupGripper(){
 
     pinMode(RIGHT_MAGNET_PIN, OUTPUT);
     pinMode(LEFT_MAGNET_PIN, OUTPUT);
+
+    // Serial.println(F("AMG88xx pixels"));
+    bool amg_status;
+    amg_status = amg.begin();
+    if (!amg_status) {
+        Serial.println("Could not find a valid AMG88xx sensor, check wiring!");
+        // while (1);
+    }
+    delay(100); // let amg boot up
 }
 
 void updateCommand(){
@@ -49,10 +63,12 @@ void runGripperActions(){
     if (magnet_state) {
         //turn on magnet
         r = 255;
+        ums3.setPixelColor(UMS3::color(r,g,b));
         MagnetsOn();
     } else {
         //turn off magnet
         r = 0;
+        ums3.setPixelColor(UMS3::color(r,g,b));
         MagnetsOff();
     }
 
@@ -60,12 +76,14 @@ void runGripperActions(){
         // Gripper EM Mode
         b = 255;
         g = 0;
+        ums3.setPixelColor(UMS3::color(r,g,b));
         MagnetPosition();
 
     } else if (gripper_state == 1) {
         // Gripper Open 
         b = 0;
         g = 255;
+        ums3.setPixelColor(UMS3::color(r,g,b));
         MagnetsOff();
         OpenForTim();
         
@@ -73,12 +91,31 @@ void runGripperActions(){
         // Gripper Close
         b = 255;
         g = 255;
+        ums3.setPixelColor(UMS3::color(r,g,b));
         MagnetsOff();
         ClosedOnTim();
         
     }
 
     ums3.setPixelColor(UMS3::color(r,g,b));
+
+    amg.readPixels(pixels);
+    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+      gripperMessage.pixels[i-1] = pixels[i-1];
+    }
+    gripperMessage.gripper_state = gripper_state;
+    gripperMessage.magnet_state = magnet_state;
+
+    // Serial.print("[");
+    // for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+    //   Serial.print(gripperMessage.pixels[i-1]);
+    //   Serial.print(", ");
+    //   if( i%8 == 0 ) Serial.println();
+    // }
+    // Serial.println("]");
+    
+    old_magnet_state = magnet_state;
+    old_gripper_state = gripper_state;
 
 }
 
@@ -87,8 +124,10 @@ void ClosedOnTim() {
     gripper_state = 2;
     RightServo.write(0);
     LeftServo.write(180);
-    Serial.print("Gripper closing onto Tim (2 sec)");
-    delay(1000);
+    // Serial.print("Gripper closing onto Tim (2 sec)");
+    if (old_gripper_state != gripper_state) {
+        delay(1000);
+    }
 }
 
 void OpenForTim() {
@@ -96,16 +135,20 @@ void OpenForTim() {
     gripper_state = 1;
     RightServo.write(0 + OPEN_ANGLE);
     LeftServo.write(180 - OPEN_ANGLE);
-    Serial.print("Gripper Ready to grab Tim (2 sec)");
-    delay(1000);
+    // Serial.print("Gripper Ready to grab Tim (2 sec)");
+    if (old_gripper_state != gripper_state) {
+        delay(1000);
+    }
 }
 
 void MagnetPosition() {
     gripper_state = 0;
     RightServo.write(180);
     LeftServo.write(0);
-    Serial.print("Gripper In Magnet Position (2 sec)");
-    delay(1000);
+    // Serial.print("Gripper In Magnet Position (2 sec)");
+    if (old_gripper_state != gripper_state) {
+        delay(1000);
+    }
 }
 
 void MagnetsOn() {

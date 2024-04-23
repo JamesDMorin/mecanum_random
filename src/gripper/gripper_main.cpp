@@ -15,6 +15,7 @@ void loop() {
     EVERY_N_MILLIS(50) {
         updateCommand();
         runGripperActions();
+        sendGripperData();
     }
 
     // // Send and print robot values at 20Hz

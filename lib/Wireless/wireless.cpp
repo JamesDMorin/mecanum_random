@@ -50,11 +50,19 @@ bool GripperControllerMessage::operator==(const GripperControllerMessage& other)
 
 void GripperMessage::print() {
     Serial.print("Gripper Message\n");
-    Serial.printf("state: %d\n", state);
+    Serial.printf("gripper_state: %d, magnet_state: %d\n", gripper_state, magnet_state);
+    Serial.print("AMG Message: \n[");
+    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
+      Serial.print(pixels[i-1]);
+      Serial.print(", ");
+      if( i%8 == 0 ) Serial.println();
+    }
+    Serial.println("]");
+    Serial.println();
 } 
 
 bool GripperMessage::operator==(const GripperMessage& other) {
-    return state == other.state;
+    return gripper_state == other.gripper_state && magnet_state == other.magnet_state ;
 }
 
 void setupWireless() {
