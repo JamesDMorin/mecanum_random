@@ -10,8 +10,9 @@
 
 #define M_ALPHA 0.1
 
-#define MAX_FORWARD 20
-#define MAX_ROTATE 30
+#define MAX_FORWARD 1
+#define MAX_ROTATE 2
+#define R_EFF 0.067882251 // 0.096m * sin(45)
 
 void setupDrive();
 void updateSetpoints(double forward, double sideways, double rotation);

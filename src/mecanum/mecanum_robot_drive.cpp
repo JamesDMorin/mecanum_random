@@ -18,9 +18,9 @@ EncoderVelocity encoders[NUM_MOTORS] = { {ENCODER1_A_PIN, ENCODER1_B_PIN, CPR_31
 PID pids[NUM_MOTORS] = { {Kp, Ki, Kd, 0, pidTau, false}, {Kp, Ki, Kd, 0, pidTau, false}, 
                          {Kp, Ki, Kd, 0, pidTau, false}, {Kp, Ki, Kd, 0, pidTau, false} };
 
-// x, y, phi
-double motor_poses[NUM_MOTORS][3] = { {-0.144, -0.116, -PI/4}, {-0.144,  0.116, PI/4},
-                                      { 0.140,  0.048, PI*3/4}, { 0.140, -0.048, -PI*3/4} };
+// x, y, phi_i
+double motor_poses[NUM_MOTORS][3] = { {12.2483*25.4/1000, 12.7232*25.4/1000, 2.9214}, { 2.9900*25.4/1000, 7.8362*25.4/1000, -1.5767},
+                                      { 7.1298*25.4/1000, 10.3410*25.4/1000, 0.5002}, {10.4816*25.4/1000, 2.6018*25.4/1000, -2.1484} };
 
 // r, theta
 double motor_position_vectors[NUM_MOTORS][2] = {{sqrt(pow(motor_poses[0][0], 2) + pow(motor_poses[0][1], 2)), atan2(motor_poses[0][1], motor_poses[0][0])}, 
@@ -31,6 +31,7 @@ double motor_position_vectors[NUM_MOTORS][2] = {{sqrt(pow(motor_poses[0][0], 2) 
 double setpoints[NUM_MOTORS] = {0, 0, 0, 0};
 double old_setpoints[NUM_MOTORS] = {0, 0, 0, 0};
 double velocities[NUM_MOTORS] = {0, 0, 0, 0};
+double v_powered[NUM_MOTORS] = {0, 0, 0, 0};
 double controlEfforts[NUM_MOTORS] = {0, 0, 0, 0};
 
 void setupDrive(){
@@ -50,24 +51,15 @@ void updateSetpoints(double forward, double sideways, double rotation) {
         motor_magnitude_angle[i][0] = sqrt(pow(motor_forward, 2) + pow(motor_sideways, 2));
         
         // Serial.printf("Motor %u: mag: %.2f, angle: %.2f\n", i, motor_magnitude_angle[i][0], motor_magnitude_angle[i][1]);
-
-        setpoints[i] = M_ALPHA * motor_magnitude_angle[i][0] * cos(motor_magnitude_angle[i][1] - motor_poses[i][2] + PI) + (1-M_ALPHA) * old_setpoints[i];
+        
+        v_powered[i] = motor_magnitude_angle[i][0] * cos(motor_magnitude_angle[i][1] - motor_poses[i][2]);
+        
+        // alpha low pass filter
+        setpoints[i] = M_ALPHA * v_powered[i]/R_EFF + (1-M_ALPHA) * old_setpoints[i];
 
         old_setpoints[i] = setpoints[i];
-        // Serial.print('hi James: ');
         Serial.printf("Motor %u: Setpoint: %.2f, ", i, setpoints[i]);
     }
-
-    // setpoints[0] = (motor_magnitude_angle[0][0] * sin(motor_magnitude_angle[0][1] - PI/4))*M_ALPHA + old_setpoints[0]*(1-M_ALPHA);
-    // setpoints[1] = -(motor_magnitude_angle[1][0] * sin(motor_magnitude_angle[1][1] + PI/4))*M_ALPHA + old_setpoints[1]*(1-M_ALPHA);
-    // setpoints[2] = (motor_magnitude_angle[2][0] * sin(-motor_magnitude_angle[2][1] + PI/4))*M_ALPHA + old_setpoints[2]*(1-M_ALPHA);
-    // setpoints[3] = (motor_magnitude_angle[3][0] * sin(motor_magnitude_angle[3][1] + PI/4))*M_ALPHA + old_setpoints[3]*(1-M_ALPHA);
-    // for (uint8_t i = 0; i < NUM_MOTORS; i++) {
-        
-    //     old_setpoints[i] = setpoints[i];
-    //     // Serial.print('hi James: ');
-    //     Serial.printf("Motor %u: Setpoint: %.2f, ", i, setpoints[i]);
-    // }
     Serial.println();
 }
 
@@ -75,6 +67,6 @@ void updatePIDs() {
     for (uint8_t i = 0; i < NUM_MOTORS; i++) {
         velocities[i] = pow(-1, i) * encoders[i].getVelocity(); // pow(-1, i) * 
         controlEfforts[i] = pids[i].calculateParallel(velocities[i], setpoints[i]);
-        motors[i].drive(controlEfforts[i]);        
+        motors[i].drive(controlEfforts[i]);
     }
 }

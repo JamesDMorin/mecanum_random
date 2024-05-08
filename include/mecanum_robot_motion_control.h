@@ -6,8 +6,6 @@
 // distance from back wheel to center in meters
 #define WHEEL_B 0.2
 
-void setupIMU();
 void followTrajectory();
-void updateOdometry();
 
 #endif

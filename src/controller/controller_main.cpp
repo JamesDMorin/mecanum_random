@@ -2,8 +2,6 @@
 #include "wireless.h"
 #include "util.h"
 #include "joystick.h"
-#include "dpad.h"
-#include "display.h"
 #include "controller_pinout.h"
 
 ControllerMessage prevControllerMessage;

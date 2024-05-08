@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include "robot_drive.h"
+#include "mecanum_robot_drive.h"
 #include "wireless.h"
 #include "util.h"
-#include "robot_motion_control.h"
+#include "mecanum_robot_motion_control.h"
 
 void setup() {
     Serial.begin(115200);
@@ -23,11 +23,8 @@ void loop() {
 
     // Send and print robot values at 20Hz
     EVERY_N_MILLIS(50) {
-        updateOdometry();
         sendRobotData();
-
-        Serial.printf("x: %.2f, y: %.2f, theta: %.2f\n",
-                    robotMessage.x, robotMessage.y, robotMessage.theta);
+        // Serial.printf("x: %.2f, y: %.2f, theta: %.2f\n", robotMessage.x, robotMessage.y, robotMessage.theta);
     }
   
 }

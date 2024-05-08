@@ -7,19 +7,15 @@ void ControllerMessage::print() {
     Serial.printf("millis: %d\n", millis);
     Serial.printf("joystick1:\n");  joystick1.print(1);
     Serial.printf("joystick2:\n");  joystick2.print(1);
-    Serial.printf("dPad:\n");  dPad.print(1);
     Serial.printf("buttonL: %s\n", buttonL);
     Serial.printf("buttonR: %s\n", buttonR);
-    Serial.printf("touchPoint:\n"); touchPoint.print(1);
 } 
 
 bool ControllerMessage::operator==(const ControllerMessage& other) {
     return joystick1 == other.joystick1 &&
            joystick2 == other.joystick2 &&
-           dPad == other.dPad &&
            buttonL == other.buttonL &&
-           buttonR == other.buttonR &&
-           touchPoint == other.touchPoint;
+           buttonR == other.buttonR;
 }
 
 void RobotMessage::print() {
@@ -34,35 +30,6 @@ bool RobotMessage::operator==(const RobotMessage& other) {
     return x == other.x &&
            y == other.y &&
            theta == other.theta;
-}
-
-void GripperControllerMessage::print() {
-    Serial.print("Gripper Controller Message\n");
-    Serial.printf("millis: %d\n", millis);
-    Serial.printf("magnet_command: %d\n", magnet_command);
-    Serial.printf("gripper_command: %d\n", gripper_command);
-} 
-
-bool GripperControllerMessage::operator==(const GripperControllerMessage& other) {
-    return magnet_command == other.magnet_command &&
-           gripper_command == other.gripper_command;
-}
-
-void GripperMessage::print() {
-    Serial.print("Gripper Message\n");
-    Serial.printf("gripper_state: %d, magnet_state: %d\n", gripper_state, magnet_state);
-    Serial.print("AMG Message: \n[");
-    for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-      Serial.print(pixels[i-1]);
-      Serial.print(", ");
-      if( i%8 == 0 ) Serial.println();
-    }
-    Serial.println("]");
-    Serial.println();
-} 
-
-bool GripperMessage::operator==(const GripperMessage& other) {
-    return gripper_state == other.gripper_state && magnet_state == other.magnet_state ;
 }
 
 void setupWireless() {
