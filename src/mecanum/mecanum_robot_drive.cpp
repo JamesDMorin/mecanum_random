@@ -20,14 +20,10 @@ PID pids[NUM_MOTORS] = { {Kp, Ki, Kd, 0, pidTau, false}, {Kp, Ki, Kd, 0, pidTau,
 
 double velocities[NUM_MOTORS] = {0, 0, 0, 0};
 double controlEfforts[NUM_MOTORS] = {0, 0, 0, 0};
+double setpoints[NUM_MOTORS] = {0, 0, 0, 0};       // angular velocity to turn the motor
+double v_desired[NUM_MOTORS] = {0, 0, 0, 0};       // spped of the wheel in the direction of φ_i
 
-
-
-double setpoints[NUM_MOTORS] = {0, 0, 0, 0};
-double old_setpoints[NUM_MOTORS] = {0, 0, 0, 0};
-double v_desired[NUM_MOTORS] = {0, 0, 0, 0};
-
-// x, y, phi_i. Conversion included from inches to meters
+// x (m), y (m), φ_i (rad). Conversion included from inches to meters for x and y
 double motor_poses[NUM_MOTORS][3] = { {12.2483*25.4/1000, 12.7232*25.4/1000,  2.9214}, 
                                       { 2.9900*25.4/1000,  7.8362*25.4/1000, -1.5767},
                                       { 7.1298*25.4/1000, 10.3410*25.4/1000,  0.5002}, 
@@ -57,9 +53,8 @@ void updateSetpoints(double forward, double sideways, double rotation) {
         v_desired[i] = motor_magnitude_angle[i][0] * cos(motor_magnitude_angle[i][1] - motor_poses[i][2]);
         
         // Equation 3.7 with an alpha low pass filter
-        setpoints[i] = M_ALPHA * v_desired[i]/R_EFF + (1-M_ALPHA) * old_setpoints[i];
+        setpoints[i] = M_ALPHA * v_desired[i]/R_EFF + (1-M_ALPHA) * setpoints[i];
 
-        old_setpoints[i] = setpoints[i];
         Serial.printf("Motor %u: Setpoint: %.2f, ", i, setpoints[i]);
     }
     Serial.println();
